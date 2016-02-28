@@ -2,11 +2,10 @@
 Author: Surapat EK-IN<br />
 Created for storing files<br />
 
-| Tables        | Are           | Cool  |
-| ------------- |:-------------:| -----:|
-| col 3 is      | right-aligned | $1600 |
-| col 2 is      | centered      |   $12 |
-| zebra stripes | are neat      |    $1 |
+| Date                  | Activities                              | By    |
+| --------------------  |:---------------------------------------:| -----:|
+| 28/2/2016             | Initialize a git repository             |       |
+|                       |  blank                          |  blank     |
 
 
 
