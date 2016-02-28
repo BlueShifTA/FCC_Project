@@ -5,6 +5,7 @@ Created for storing files<br />
 | Date                  | Activities                              | By    |
 | --------------------  |:---------------------------------------:| -----|
 | 28/2/2016             | Initialize a git repository             | S. Ek-in      |
+| 28/2/2016             | Initialize directories, BG SIG COMP     | S. Ek-in      |
 
 
 

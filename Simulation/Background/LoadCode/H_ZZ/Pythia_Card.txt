@@ -1,0 +1,19 @@
+http://atlaswww.hep.anl.gov/hepsim/info.php?item=128
+
+
+. input =Random:seed = 0
+.. input =Beams:idA = 2212
+.. input =Beams:idB = 2212
+.. input =Beams:eCM = 100000.
+.. input =HardQCD:all = off
+.. HiggsSM:all = on
+...25:m0 = 125.
+.. input =Tune:pp = 5
+.. input =PDF:pSet = LHAPDF6:MSTW2008lo68cl.LHgrid
+.. input =MultipartonInteractions:bProfile = 4
+.. input =MultipartonInteractions:a1 = 0.03
+.. input =MultipartonInteractions:pT0Ref = 1.90
+.. input =MultipartonInteractions:ecmPow = 0.30
+.. input =SpaceShower:rapidityOrder=0
+.. input =ParticleDecays:limitTau0 = on
+.. input =ParticleDecays:tau0Max = 10

@@ -1,0 +1,3 @@
+ /afs/cern.ch/work/s/sekin/private/Project/SnowMass_33TeV/Signal/LSF/Run/pythia/signal_temp_bash.job
+
+ /uhome/usc/u5505247 

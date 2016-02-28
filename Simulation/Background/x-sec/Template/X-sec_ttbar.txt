@@ -1,0 +1,16 @@
+50_100 Cross Section : 1.952e+04 +- 1.976e+02 pb
+100_200 Cross Section : 1.636e+04 +- 1.724e+02 pb
+200_400 Cross Section : 5.257e+03 +- 6.032e+01 pb
+400_600 Cross Section : 6.067e+02 +- 7.037e+00 pb
+600_800 Cross Section : 1.203e+02 +- 1.390e+00 pb
+800_1000 Cross Section : 3.400e+01 +- 3.972e-01 pb
+1000_1500 Cross Section : 1.325e+01 +- 1.472e-01 pb
+1500_2000 Cross Section : 1.898e+00 +- 2.153e-02 pb
+2000_2500 Cross Section : 4.655e-01 +- 5.176e-03 pb
+2500_3000 Cross Section : 1.456e-01 +- 1.635e-03 pb
+3000_4000 Cross Section : 5.447e-02 +- 5.938e-04 pb
+4000_5000 Cross Section : 1.125e-02 +- 1.250e-04 pb
+5000_10000 Cross Section : 3.039e-03 +- 3.388e-05 pb
+10000_15000 Cross Section : 2.840e-05 +- 3.269e-07 pb
+15000_20000 Cross Section : 7.689e-07 +- 8.844e-09 pb
+20000_25000 Cross Section : 2.554e-08 +- 2.924e-10 pb

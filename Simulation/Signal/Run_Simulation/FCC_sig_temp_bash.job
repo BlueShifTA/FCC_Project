@@ -1,0 +1,154 @@
+#!/bin/bash
+
+#
+# ---------------------------------------------------------
+# Comments & optional setting
+# ---------------------------------------------------------
+# INPUT1 = Delta 
+# INPUT2 = MD - New Planck's scale
+# INPUT3 = Amount
+# INPUT4 = INDEX 
+
+#
+# ---------------------------------------------------------
+# LSF parameters
+# ---------------------------------------------------------
+#
+echo ""
+echo "Job is running on `uname -a`"
+echo "Job started on `date`"
+echo ""
+#echo "Job has been submitted from : " $LS_SUBCWD
+
+
+# . /afs/cern.ch/sw/lcg/external/gcc/4.8/x86_64-slc6/setup.sh
+# . /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.32/x86_64-slc6-gcc48-opt/root/bin/thisroot.sh
+
+#
+#----------------------------------------------------------
+# S e t   t h e   r u n t i m e   e n v i r o n m e n t
+#----------------------------------------------------------
+#
+echo "Step 1 : Setting the environment"
+SCRATCH_SRC="/home/orion/Project/ParticlePhysics/FCC/Simulation/Signal/ADD"
+CODE_SRC=${SCRATCH_SRC}/CODE/Generation
+PYTHIA8DIR=/home/orion/Software/Pythia8/pythia8186
+DELPHESDIR=/home/orion/Software/Delphes/Delphes-3.2.0
+DATADIR=/home/orion/Project/ParticlePhysics/FCC/Simulation/Data/FCC_Project/Signal
+WORKDIR_ME=${SCRATCH_SRC}/Processes
+WORKDIR=${WORKDIR_ME}
+echo "- - - - - PATH SETTING- - - - -"
+echo "SCRAM_ARCH is : " ${SCRAM_ARCH}
+echo "CODE_SRC is : " ${CODE_SRC}
+echo "WorkDir    is : " ${WORKDIR}
+echo "Disk space on this batch machine:"
+df -h
+
+
+#
+#----------------------------------------------------------
+# Run INPUT
+#----------------------------------------------------------
+#
+#echo "Step 2 : Run"
+############################################################################################
+### Step-1: Setting Variables                                                              #
+############################################################################################
+#
+#echo "Start Step-1: "
+#
+#cd ${WORKDIR}
+##SCRAM_ARCH=slc6_amd64_gcc472
+#
+cd ${PYTHIA8DIR}
+#
+#cp -a FCC_ADD_Template INPUT1_INPUT2_INPUT3_INPUT4
+#
+#cd INPUT1_INPUT2_INPUT3_INPUT4
+#
+#source config.sh
+#
+#sed s/IN1/INPUT1/g ADD_pythia.cc > temp
+#mv temp ADD_pythia.cc
+#
+#sed s/IN2/INPUT2/g ADD_pythia.cc > temp
+#mv temp ADD_pythia.cc
+#
+#sed s/IN3/INPUT3/g ADD_pythia.cc > temp
+#mv temp ADD_pythia.cc
+#
+#sed s/IN4/INPUT4/g ADD_pythia.cc > temp
+#mv temp ADD_pythia.cc
+#
+#################################################################################################################
+##
+##
+############################################################################################
+### Step-2: Running Pythia                                                                 #
+############################################################################################
+#
+#echo "Start Step-2: "
+#
+#make ADD_pythia
+#./ADD_pythia.exe > pythia_INPUT1_INPUT2_INPUT3_INPUT4.log
+#
+#cd ../
+#
+mv INPUT1_INPUT2_INPUT3_INPUT4 ${WORKDIR} 
+#
+
+##########################################################################################
+# Step-3: Running DELPHES                                                                #
+##########################################################################################
+
+echo "Start Step-3: "
+
+#-----------Access to Delphes directory-------------
+
+cd ${DELPHESDIR}
+mv ${WORKDIR}/INPUT1_INPUT2_INPUT3_INPUT4/pythia_ADD_INPUT1_INPUT2_INPUT3_INPUT4.hep .
+#mv ${WORKDIR}/Sum_GEN/pythia_ADD_INPUT1_INPUT2_INPUT3_INPUT4.hep .
+
+#----------Running Delphes--------
+
+echo "Running Delphes"
+
+./DelphesHepMC cards/delphes_card_FCC_hh_rfast001.tcl tev100_pythia8_ADD_INPUT1_INPUT2_INPUT3_INPUT4.root pythia_ADD_INPUT1_INPUT2_INPUT3_INPUT4.hep
+
+
+mv pythia_ADD_INPUT1_INPUT2_INPUT3_INPUT4.hep ${WORKDIR}/Sum_GEN
+mv tev100_pythia8_ADD_INPUT1_INPUT2_INPUT3_INPUT4.root ${WORKDIR}/Sum_FAST
+
+#
+#
+##---------------------------------------------Analysis Part---------------------------------
+#
+#cp -a ${CODE_SRC}/analysis_code_w.C .
+#
+#root -l  analysis_code_w.C\(\"delphes_output.root\"\)
+#
+#rm -f delphes_output.root
+#
+#mv Monojet.root ADD_INPUT1_INPUT2_INPUT3_INPUT4.root
+#mv Monojet.txt ADD_INPUT1_INPUT2_INPUT3_INPUT4.txt
+#
+#rm -f libDelphes.so 
+#rm -f Make* 
+#rm -f ADD_pythia
+#rm -f DelphesHepMC 
+#rm -f MinBias100K_33TeV.pileup 
+#
+#----------------------------------------------------------
+# Clear job and log
+#----------------------------------------------------------
+#-----------------------------Move File--------------------------------
+
+
+cd ${WORKDIR}
+
+echo ""
+echo "Job end `date`"
+echo ""
+
+exit ${status}
+#==============================End Of Program======================================

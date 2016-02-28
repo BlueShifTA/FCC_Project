@@ -1,0 +1,27 @@
+http://atlaswww.hep.anl.gov/hepsim/info.php?item=110
+
+
+.. input =ApplyParticleSlim=on
+.. input =EventsNumber=10000
+.. input =Random:setSeed = on
+.. input =Random:seed = 0
+.. input =Beams:idA = 2212
+.. input =Beams:idB = 2212
+.. input =Beams:eCM = 100000.
+.. input =HardQCD:all = off
+.. input =Tune:pp = 5
+.. input =PDF:pSet = LHAPDF6:MSTW2008lo68cl.LHgrid
+.. input =MultipartonInteractions:bProfile = 4
+.. input =MultipartonInteractions:a1 = 0.03
+.. input =MultipartonInteractions:pT0Ref = 1.90
+.. input =MultipartonInteractions:ecmPow = 0.30
+.. input =SpaceShower:rapidityOrder=0
+.. input =PhaseSpace:mHatMin = 1000
+.. input =PhaseSpace:pTHatMin = 1000
+.. input =PhaseSpace:pTHatMax = 100000
+.. input =ParticleDecays:limitTau0 = on
+.. input =ParticleDecays:tau0Max = 10
+.. input =WeakDoubleBoson:all = on
+
+LHAPDF 6.1.4 loading /share/sl6/lhapdf6/share/LHAPDF/MSTW2008lo68cl/MSTW2008lo68cl_0000.dat
+MSTW2008lo68cl PDF set, member #0, version 2; LHAPDF ID = 21000
