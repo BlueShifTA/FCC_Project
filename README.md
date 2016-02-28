@@ -5,7 +5,6 @@ Created for storing files<br />
 | Date                  | Activities                              | By    |
 | --------------------  |:---------------------------------------:| -----|
 | 28/2/2016             | Initialize a git repository             | S. Ek-in      |
-|                       | blank                                  | blank     |
 
 
 
