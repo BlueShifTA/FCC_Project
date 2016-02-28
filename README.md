@@ -1,12 +1,15 @@
 # FCC_Project
-##Author: Surapat EK-IN
-##Created for storing files
+Author: Surapat EK-IN\s\s
+Created for storing files\s\s
 
-=========================================================
-Date             Activity                 By
-28/02/2016       Initialize git           S. Ek-in
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
 
-==========================================================
+
+
 
 Repository for Senior project
 
