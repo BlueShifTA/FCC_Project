@@ -35,7 +35,7 @@ CODE_SRC=${SCRATCH_SRC}/CODE/Generation
 PYTHIA8DIR=/home/orion/Software/Pythia8/pythia8186
 DELPHESDIR=/home/orion/Software/Delphes/Delphes-3.2.0
 DATADIR=/home/orion/Project/ParticlePhysics/FCC/Simulation/Data/FCC_Project/Signal
-WORKDIR_ME=${SCRATCH_SRC}/Processes
+WORKDIR_ME=${SCRATCH_SRC}/Processes_GEN
 WORKDIR=${WORKDIR_ME}
 echo "- - - - - PATH SETTING- - - - -"
 echo "SCRAM_ARCH is : " ${SCRAM_ARCH}

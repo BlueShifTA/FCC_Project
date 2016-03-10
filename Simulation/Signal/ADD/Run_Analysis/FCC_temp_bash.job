@@ -1,0 +1,181 @@
+#!/bin/bash
+
+#
+# ---------------------------------------------------------
+# Comments & optional setting
+# ---------------------------------------------------------
+# INPUT1 = Process  eg. Bj tt tj wzjet
+# INPUT2 = N_ADD 
+# INPUT3 = MD i
+# INPUT4 = MD f
+# INPUT5 = index i 
+# INPUT6 = index f
+
+
+#
+# ---------------------------------------------------------
+# LSF parameters
+# ---------------------------------------------------------
+#
+echo ""
+echo "Job is running on `uname -a`"
+echo "Job started on `date`"
+echo ""
+##echo "Job has been submitted from : " $LS_SUBCWD
+#
+#. /afs/cern.ch/sw/lcg/external/gcc/4.8/x86_64-slc6/setup.sh
+#. /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.32/x86_64-slc6-gcc48-opt/root/bin/thisroot.sh
+
+#
+#----------------------------------------------------------
+# S e t   t h e   r u n t i m e   e n v i r o n m e n t
+#----------------------------------------------------------
+#
+echo "Step 1 : Setting the environment"
+SCRATCH_SRC="/home/orion/Project/ParticlePhysics/FCC/Simulation/Signal/INPUT1"
+CODE_SRC=${SCRATCH_SRC}/CODE
+WORKDIR=${SCRATCH_SRC}/Processes
+DATADIR="/home/orion/Project/ParticlePhysics/FCC/Simulation/Data/FCC_Project/Signal"
+#DELPHESDIR=/afs/cern.ch/user/s/sekin/Software/Delphes-3.2.0
+
+#
+echo "- - - - - PATH SETTING- - - - -"
+echo "SCRAM_ARCH is : " ${SCRAM_ARCH}
+echo "CODE_SRC is : " ${CODE_SRC}
+echo "WorkDir    is : " ${WORKDIR}
+echo "Disk space on this batch machine:"
+df -h
+#
+#
+##
+##----------------------------------------------------------
+## Run INPUT
+##----------------------------------------------------------
+##
+#echo "Step 2 : Run"
+##########################################################################################
+# Step-1: Load and Make File lists                                                       #
+##########################################################################################
+
+echo "Start Step-1: "
+
+cd ${WORKDIR}/INPUT1/INPUT2
+#SCRAM_ARCH=slc6_amd64_gcc481
+#
+cp -a ${CODE_SRC}/Analysis_Code.C .
+cp -a ${CODE_SRC}/libDelphes.so .
+#-----------------Begin Process Loop---------------
+
+declare -i count
+
+for ind in `seq INPUT5 INPUT6` ; do
+    for MD in `seq INPUT3 1000 INPUT4` ; do
+        for plotN in `seq 4 4` ; do 
+            echo "tev100_pythia8_INPUT1_INPUT2_${MD}_10000_${ind}.root ${plotN}"
+            count=0
+            while  ( [ ! -f FileLoad.root ] ); do  
+                if [ ${count} == 10 ]; then 
+                    break
+                fi 
+                cp -a ${DATADIR}/INPUT1/tev100_pythia8_INPUT1_INPUT2_${MD}_10000_${ind}.root FileLoad.root
+                count=${count}+1
+                sleep 10
+            done
+            root -l <<EOF
+                .L Analysis_Code.C
+                Analysis_Code("FileLoad.root",${plotN},0)
+                .q
+EOF
+            mv Monojet.root Analysis_INPUT1_INPUT2_${MD}_${ind}_${plotN}.root
+            mv Monojet.txt  Analysis_INPUT1_INPUT2_${MD}_${ind}_${plotN}.txt
+            rm -f FileLoad.root
+        done
+    done
+done
+#
+##----------------------------Move to Directory and clear-----------------
+rm -f Analysis_Code.C
+rm -f libDelphes.so 
+
+
+#
+#
+#
+################################################################################################################
+#
+###########################################################################################
+## Step-2: Running Process                                                                #
+###########################################################################################
+#
+#echo "Start Step-2: "
+#
+##---------------Prepare running code---------------------------
+##cd ${WORKDIR}/INPUT1_INPUT2_INPUT3_INPUT4_INPUT5_Proc 
+#
+#MAXLINE=$(wc -l INPUT1.txt | awk '{print $1}')
+##------------------------------Loop HTBin---------------------------------
+#for i in `seq 1 2` ; do
+#     DIRE2=$(sed -n "${i}{p;q;}" INPUT1.txt)
+#     echo ${DIRE2}
+#     cd ${DIRE2}
+#     pwd
+#     cp -a ${CODE_SRC}/Analysis_Code.C .
+#     cp -a ${DELPHESDIR}/libDelphes.so .
+#     MAXLINERUNIN=$(wc -l ${DIRE2}.txt | awk '{print $1}')
+#     echo ${MAXLINERUNIN}
+#     #------------------------------Loop Link File----------------------------
+#     for j in `seq 1 ${MAXLINERUNIN}` ; do
+#         LINK=$(sed -n "${j}{p;q;}" ${DIRE2}.txt)
+#         echo ${LINK}
+#         wget --output-document=FileLoad.root ${LINK}
+#         root -l <<EOF
+#             .L ${CODE_SRC}/Analysis_Code.C
+#             Analysis_Code("FileLoad.root")
+#             .q
+#EOF
+#         mv Monojet.root ${DIRE2}_${j}.root
+#         mv Monojet.txt ${DIRE2}_${j}.txt
+#         rm -f FileLoad.root
+#         rm -rf core*
+#     done
+#     rm ${DIRE2}.txt
+#     rm Analysis_Code.C
+#     rm libDelphes.so
+#     cd ../
+#done
+
+##-----------------------------End HTbin---------------------------------
+#
+#
+#
+#
+##----------------------------------------------------------
+## Clear job and log
+##----------------------------------------------------------
+##-----------------------------Move File--------------------------------
+#
+#mkdir Bj
+#mv *Bj.root Bj/
+#mv *Bj.log Bj/
+#
+#rm -rf Log_*
+#rm -rf LSF*
+#
+#
+#rm -f analysis_code*.C
+#rm -f libDelphes.so
+#rm -f *txt
+#cd ${WORKDIR}
+#
+#mv INPUT1_INPUT2_INPUT3_INPUT4_INPUT5_Proc ${WORKDIR_ME} 
+#
+#
+#rm -rf Log_*
+#rm -rf LSF*
+#
+#echo ""
+#echo "Job end `date`"
+#echo ""
+#
+#exit ${status}
+#==============================End Of Program======================================
