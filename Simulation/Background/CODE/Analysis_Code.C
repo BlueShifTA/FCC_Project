@@ -12,7 +12,7 @@
 //                                           Event, Photon, ScalarHT
 // "1/14/2016" Plan to modify the code -> Add N-1 plot convention
 // -----------"1/20/2016" Plan to write a function -> Fill All
-//
+// -----------"3/01/2016" Add diff in wzjet process -> Default-> proc = 0
 //------------------------------------------------------------------------------
 #include <iostream>
 #include <cmath>
@@ -20,7 +20,7 @@
 
 using namespace std;
 
-void Analysis_Code(const char *inputFile, Int_t plot_num) {
+void Analysis_Code(const char *inputFile, Int_t plot_num, Int_t proc ) {
 
   gSystem->Load("libDelphes.so");
   // Open file & read tree structure
@@ -43,6 +43,9 @@ void Analysis_Code(const char *inputFile, Int_t plot_num) {
   Int_t Cuts[20] = {}; // For collect data
   Float_t weight;
   string filename = "";
+  Int_t count_Z = 0;
+  Int_t count_W = 0;
+  Int_t count_test = 0 ;
 
   // Variable as leafs
   std::vector<Double_t> vJet;	 
@@ -52,9 +55,22 @@ void Analysis_Code(const char *inputFile, Int_t plot_num) {
   std::vector<Double_t> vTau;	 
 
   // Declear root file and tree
-  TFile *f            = new TFile("Monojet.root","recreate");
+  if (proc > 0 ) {
+    stringstream proc_num;
+    proc_num << proc;
+    string monojet  = "Monojet_wzjet_"+proc_num.str()+".root";
+    string monojetx = "Monojet_wzjet_"+proc_num.str()+".txt";
+    TFile *f            = new TFile(monojet.c_str(),"recreate");
+    fstream myfile;
+    myfile.open(monojetx.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
+  } else {
+    TFile *f            = new TFile("Monojet.root","recreate");
+    fstream myfile;
+    myfile.open("Monojet.txt", std::fstream::in | std::fstream::out | std::fstream::app);
+
+  }
+
   TTree *SelectionCut = new TTree("SelectionCut","Tree for collect data"); 
-  
   // Add branches
   SelectionCut->Branch("Jet",&vJet);
   SelectionCut->Branch("MissingET",&vMissingET);
@@ -117,16 +133,27 @@ void Analysis_Code(const char *inputFile, Int_t plot_num) {
            weight = event->Weight;
       }
 
-      // Test of Particle variable  
-      //for (int iPart=0; iPart<branchParticle->GetEntries(); iPart++) {
-          //GenParticle* part = (GenParticle*)(branchParticle->At(iPart));
-	      //cout << "PID: " << part->PID << " Status: " << part->Status << " D1: " << part->D1 << " D2: " << part->D2 << " IsPU: " << part->IsPU << endl;
-      //}
+      // Test of Particle variable 
+      count_Z = 0;
+      count_W = 0;
 
+      for (int iPart=0; iPart<branchParticle->GetEntries(); iPart++) {
+        GenParticle* part = (GenParticle*)(branchParticle->At(iPart));
+        if (TMath::Abs(part->PID) ==  23 && (TMath::Abs(part->Status) == 44 || TMath::Abs(part->Status) == 62) && count_Z == 0) count_Z++; 
+        if (TMath::Abs(part->PID) ==  24 && (TMath::Abs(part->Status) == 44 || TMath::Abs(part->Status) == 62) && count_W == 0) count_W++; 
+        //cout << "PID: " << part->PID << " Status: " << part->Status << " D1: " << part->D1 << " D2: " << part->D2 << " IsPU: " << part->IsPU << endl;
+  //      }
+      }
+      //cout << "===========================================" << endl;
+      // TEST Events
 
+      if (proc == 1 &&(count_Z != 1 || count_W != 0)) continue; // Z case; 
+      if (proc == 2 &&(count_Z != 0 || count_W != 1)) continue; // W case; 
+      if (proc == 3 &&(count_Z != 1 || count_W != 1)) continue; // WZ case; 
+      //cout << "Z: " << count_Z << " W: "  << count_W << " iEvent: " << iEvent << " tree->GetEntries(): " << tree->GetEntries() << endl; 
       // MET 
       MissingET* met = (MissingET*)(branchMissingET->At(0));
-
+      count_test++;
 
 // ========================================================Pre-Selection Cuts ===================================================
 //=======================================================0.) No applying cuts==============================================    
@@ -902,8 +929,6 @@ void Analysis_Code(const char *inputFile, Int_t plot_num) {
 
 // Create file for data aquisition
 
-  fstream myfile;
-  myfile.open("Monojet.txt", std::fstream::in | std::fstream::out | std::fstream::app);
 
   //myfile << "    #Z  Boson: " << countZ << endl;
   //myfile << "#Znunu  Boson: " << countZnunu << endl;
@@ -920,6 +945,6 @@ void Analysis_Code(const char *inputFile, Int_t plot_num) {
   //Write and Save to Root file
   f->Write();
   f->Close();
-
+  cout << "Count: " << count_test << endl; 
 
 }

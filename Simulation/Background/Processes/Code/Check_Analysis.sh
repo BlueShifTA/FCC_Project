@@ -18,8 +18,12 @@ pt[15]=15000
 pt[16]=20000
 pt[17]=25000
 
-for i in `seq 1 16`
-do 
-    P=$(ls -Al ${pt[${i}]}_${pt[${i}+1]} | grep _7.root | wc) 
-    echo ${pt[${i}]}_${pt[${i}+1]} ${P}
+for num in `seq 0 7`; do
+    for i in `seq 1 16`
+    do 
+        #P=$(ls -Al ${pt[${i}]}_${pt[${i}+1]} | grep 0_${num}.root | wc) 
+        P=$(ls -Al ${pt[${i}]}_${pt[${i}+1]} | grep ${num}.root | wc) 
+        echo ${pt[${i}]}_${pt[${i}+1]} ${P}
+    done
+    echo "========================${num}======================="
 done 

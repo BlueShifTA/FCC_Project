@@ -13,8 +13,8 @@ do
     for ind in `seq 0 7`
     do 
         #=============================Add Histograms=======================================
-        hadd  tev100_${1}_${dir}_result_${ind}.root *${ind}.root 
-        mv tev100_${1}_${dir}_result_${ind}.root ../../../Results/${1}/${ind} 
+        #hadd  tev100_${1}_${dir}_result_${ind}.root *${ind}.root 
+        #mv tev100_${1}_${dir}_result_${ind}.root ../../../Results/${1}/${ind} 
         
         #=============================Declear Array========================================
         declare -a SelecCut

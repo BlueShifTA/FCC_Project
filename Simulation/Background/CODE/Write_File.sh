@@ -24,7 +24,7 @@ pt[17]=25000
 
 for i in `seq 1 16`
 do
-       echo "./Run_Processes_bash.sh wzjet ${pt[${i}]} ${pt[${i}+1]}" >> Run_many_wzjet.sh
+       echo "./Run_Processes_bash.sh wzjet ${pt[${i}]} ${pt[${i}+1]} 0 49" >> Run_many_wzjet.sh
 done
 
 chmod a+x Run_many_wzjet.sh

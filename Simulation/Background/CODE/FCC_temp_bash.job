@@ -7,7 +7,9 @@
 # INPUT1 = Process  eg. Bj tt tj wzjet
 # INPUT2 = Initial Index
 # INPUT3 = Final Index
-# INPUT4 = Run All index
+# INPUT4 = Run from initial index
+# INPUT5 = final index
+# PlotN  = Plot k-N
 
 #
 # ---------------------------------------------------------
@@ -63,16 +65,42 @@ cp -a ${CODE_SRC}/Analysis_Code.C .
 cp -a ${CODE_SRC}/libDelphes.so .
 #-----------------Begin Process Loop---------------
 
-for ind in `seq 0 1` ; do
-    cp -a ${DATADIR}/INPUT1/tev100_pythia8_INPUT1_ptINPUT2_INPUT3_${ind}.root FileLoad.root
-    root -l <<EOF
-        .L Analysis_Code.C
-        Analysis_Code("FileLoad.root")
-        .q
+for ind in `seq INPUT4 INPUT5` ; do
+    for plotN in `seq 4 4` ; do 
+        echo "tev100_pythia8_INPUT1_ptINPUT2_INPUT3_${ind}.root ${plotN}"
+        while  ( [ ! -f FileLoad.root ] ); do  
+            if [ ${count} == 5 ]; then 
+                break
+            fi  
+            cp -a ${DATADIR}/INPUT1/tev100_pythia8_INPUT1_ptINPUT2_INPUT3_${ind}.root FileLoad.root
+            count=${count}+1
+            sleep 5
+        done
+#        if [ "INPUT1" == "wzjet" ]; then 
+#        root -l <<EOF
+#            .L Analysis_Code.C
+#            Analysis_Code("FileLoad.root",${plotN},1)
+#            Analysis_Code("FileLoad.root",${plotN},2)
+#            Analysis_Code("FileLoad.root",${plotN},3)
+#            .q
+#EOF
+#        mv Monojet_wzjet_1.root Analysis_INPUT1_INPUT2_INPUT3_${ind}_${plotN}_1.root
+#        mv Monojet_wzjet_2.root Analysis_INPUT1_INPUT2_INPUT3_${ind}_${plotN}_2.root
+#        mv Monojet_wzjet_3.root Analysis_INPUT1_INPUT2_INPUT3_${ind}_${plotN}_3.root
+#        mv Monojet_wzjet_1.txt  Analysis_INPUT1_INPUT2_INPUT3_${ind}_${plotN}_1.txt
+#        mv Monojet_wzjet_2.txt  Analysis_INPUT1_INPUT2_INPUT3_${ind}_${plotN}_2.txt
+#        mv Monojet_wzjet_3.txt  Analysis_INPUT1_INPUT2_INPUT3_${ind}_${plotN}_3.txt
+#        else 
+        root -l <<EOF
+            .L Analysis_Code.C
+            Analysis_Code("FileLoad.root",${plotN},0)
+            .q
 EOF
-    mv Monojet.root Analysis_INPUT1_INPUT2_INPUT3_${ind}.root
-    mv Monojet.txt  Analysis_INPUT1_INPUT2_INPUT3_${ind}.txt
-    rm -f FileLoad.root
+        mv Monojet.root Analysis_INPUT1_INPUT2_INPUT3_${ind}_${plotN}.root
+        mv Monojet.txt  Analysis_INPUT1_INPUT2_INPUT3_${ind}_${plotN}.txt
+#        fi 
+        rm -f FileLoad.root
+    done
 done
 #
 ##----------------------------Move to Directory and clear-----------------
