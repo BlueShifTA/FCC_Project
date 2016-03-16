@@ -13,6 +13,8 @@
 // "1/14/2016" Plan to modify the code -> Add N-1 plot convention
 // -----------"1/20/2016" Plan to write a function -> Fill All
 // -----------"3/01/2016" Add diff in wzjet process -> Default-> proc = 0
+// -----------"3/16/2016" Add new selection cuts base on Delphes card => rfast002
+//                        -> !!!NEED!!! new Analysis code to print out initial data 
 //------------------------------------------------------------------------------
 #include <iostream>
 #include <cmath>
@@ -134,22 +136,22 @@ void Analysis_Code(const char *inputFile, Int_t plot_num, Int_t proc ) {
       }
 
       // Test of Particle variable 
-      //count_Z = 0;
-      //count_W = 0;
+      count_Z = 0;
+      count_W = 0;
 
-      //for (int iPart=0; iPart<branchParticle->GetEntries(); iPart++) {
-      //  GenParticle* part = (GenParticle*)(branchParticle->At(iPart));
-      //  if (TMath::Abs(part->PID) ==  23 && (TMath::Abs(part->Status) == 44 || TMath::Abs(part->Status) == 62) && count_Z == 0) count_Z++; 
-      //  if (TMath::Abs(part->PID) ==  24 && (TMath::Abs(part->Status) == 44 || TMath::Abs(part->Status) == 62) && count_W == 0) count_W++; 
-      //  //cout << "PID: " << part->PID << " Status: " << part->Status << " D1: " << part->D1 << " D2: " << part->D2 << " IsPU: " << part->IsPU << endl;
-  //  //    }
-      //}
+      for (int iPart=0; iPart<branchParticle->GetEntries(); iPart++) {
+        GenParticle* part = (GenParticle*)(branchParticle->At(iPart));
+        if (TMath::Abs(part->PID) ==  23 && (TMath::Abs(part->Status) == 44 || TMath::Abs(part->Status) == 62) && count_Z == 0) count_Z++; 
+        if (TMath::Abs(part->PID) ==  24 && (TMath::Abs(part->Status) == 44 || TMath::Abs(part->Status) == 62) && count_W == 0) count_W++; 
+        //cout << "PID: " << part->PID << " Status: " << part->Status << " D1: " << part->D1 << " D2: " << part->D2 << " IsPU: " << part->IsPU << endl;
+  //      }
+      }
       //cout << "===========================================" << endl;
       // TEST Events
 
-      //if (proc == 1 &&(count_Z != 1 || count_W != 0)) continue; // Z case; 
-      //if (proc == 2 &&(count_Z != 0 || count_W != 1)) continue; // W case; 
-      //if (proc == 3 &&(count_Z != 1 || count_W != 1)) continue; // WZ case; 
+      if (proc == 1 &&(count_Z != 1 || count_W != 0)) continue; // Z case; 
+      if (proc == 2 &&(count_Z != 0 || count_W != 1)) continue; // W case; 
+      if (proc == 3 &&(count_Z != 1 || count_W != 1)) continue; // WZ case; 
       //cout << "Z: " << count_Z << " W: "  << count_W << " iEvent: " << iEvent << " tree->GetEntries(): " << tree->GetEntries() << endl; 
       // MET 
       MissingET* met = (MissingET*)(branchMissingET->At(0));
@@ -162,7 +164,7 @@ void Analysis_Code(const char *inputFile, Int_t plot_num, Int_t proc ) {
     Cuts[countCuts]++;
     for (Int_t ijet = 0 ; ijet < numberJet; ijet++){
       Jet* jet = (Jet*) branchJet->At(ijet);
-      if (jet->PT <= 30 || TMath::Abs(jet->Eta) >= 4.5) continue;
+      if (jet->PT <= 30 || TMath::Abs(jet->Eta) >= 6.0) continue;
       countJet++;
       if (countJet == 1) {
          Jet* jet1 = (Jet*) branchJet->At(ijet);
@@ -256,7 +258,7 @@ void Analysis_Code(const char *inputFile, Int_t plot_num, Int_t proc ) {
     // 2.) Leading jet PT > 110 GeV && Eta < 2.4
 
     if (plot_num != 2) {
-        if (jet1->PT <= 110 || TMath::Abs(jet1->Eta) > 2.4) continue;
+        if (jet1->PT <= 110 || TMath::Abs(jet1->Eta) > 6.0) continue;
     }
     countCuts++;
     Cuts[countCuts]++;
@@ -397,7 +399,7 @@ void Analysis_Code(const char *inputFile, Int_t plot_num, Int_t proc ) {
     if (plot_num != 5) {
         for (Int_t ielec = 0 ; ielec < numberElectron; ielec++){
           Electron* elec = (Electron*) branchElectron->At(ielec);
-          if (elec->PT > 10 && TMath::Abs(elec->Eta) < 2.1 ) {
+          if (elec->PT > 15 && TMath::Abs(elec->Eta) < 6.0 ) {
              ++iEvent;
              goto Init;
           }
@@ -445,7 +447,7 @@ void Analysis_Code(const char *inputFile, Int_t plot_num, Int_t proc ) {
     if (plot_num != 6) {
         for (Int_t imuon = 0 ; imuon < numberMuon; imuon++){
           Muon* muon = (Muon*) branchMuon->At(imuon);
-          if (muon->PT > 10 && TMath::Abs(muon->Eta) < 2.4) {++iEvent;goto Init;}
+          if (muon->PT > 10 && TMath::Abs(muon->Eta) < 6.0) {++iEvent;goto Init;}
         }
     }
     countCuts++;
@@ -492,7 +494,7 @@ void Analysis_Code(const char *inputFile, Int_t plot_num, Int_t proc ) {
         for (Int_t ip = 0; ip < numberGen; ip++){
           Particle  = (GenParticle*) branchParticle->At(ip);
           if (TMath::Abs(Particle->PID) == 15 ) {
-             if (Particle->PT > 20 && TMath::Abs(Particle->Eta) < 2.3) {++iEvent;goto Init;}
+             if (Particle->PT > 20 && TMath::Abs(Particle->Eta) < 6.0) {++iEvent;goto Init;}
           }
         }    
     }
