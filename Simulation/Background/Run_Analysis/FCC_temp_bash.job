@@ -85,7 +85,7 @@ for loadfile in ${LINKLOAD[@]} ; do # Loop files
     wget ${loadfile}  
     FILENAME=$(echo ${loadfile} | sed 's/\// /g' | awk '{print $9}' )
     ROOTNAME=$(echo ${loadfile} | sed 's/\// /g' | awk '{print $9}' | sed 's/\.promc/\.root/') 
-    WOTYNAME=$(echo ${loadfile} | sed 's/\// /g' | awk '{print $9}' | sed 's/\.promc/" "/') 
+    WOTYNAME=$(echo ${loadfile} | sed 's/\// /g' | awk '{print $9}' | sed 's/\.promc//') 
 
     ./DelphesProMC delphes_card_FCC_hh_rfast002.tcl ${ROOTNAME} ${FILENAME}
     mv ${FILENAME} ${DATADIR}/Data_ProMC/INPUT1
@@ -117,9 +117,9 @@ EOF
                 Analysis_Code("FileLoad.root",${plotN},0)
                 .q
 EOF
-            mv Monojet.root Analysis_${WOTYNAME}_${ind}_${plotN}.root
-            mv Monojet.txt  Analysis_${WOTYNAME}_${ind}_${plotN}.txt
-            fi 
+            mv Monojet.root Analysis_${WOTYNAME}_${plotN}.root
+            mv Monojet.txt  Analysis_${WOTYNAME}_${plotN}.txt
+        fi 
     done
     mv FileLoad.root ${ROOTNAME}  
     mv ${ROOTNAME} Data/
