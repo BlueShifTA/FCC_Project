@@ -15,6 +15,7 @@
 // -----------"3/01/2016" Add diff in wzjet process -> Default-> proc = 0
 // -----------"3/16/2016" Add new selection cuts base on Delphes card => rfast002
 //                        -> !!!NEED!!! new Analysis code to print out initial data 
+// -----------"3/17/2016" Edit variables for plotting histograms -> eta coverage plot to 7 
 //------------------------------------------------------------------------------
 #include <iostream>
 #include <cmath>
@@ -69,7 +70,6 @@ void Analysis_Code(const char *inputFile, Int_t plot_num, Int_t proc ) {
     TFile *f            = new TFile("Monojet.root","recreate");
     fstream myfile;
     myfile.open("Monojet.txt", std::fstream::in | std::fstream::out | std::fstream::app);
-
   }
 
   TTree *SelectionCut = new TTree("SelectionCut","Tree for collect data"); 
@@ -87,9 +87,9 @@ void Analysis_Code(const char *inputFile, Int_t plot_num, Int_t proc ) {
   Double_t pi = 3.14159265;
   string selec  = "Select";
   string phys[] = {"_MET_","_Jet1_Pt_","_Jet2_Pt_","_Jet1_Eta_","_Jet2_Eta_","_Jetdel_Phi_","_Jet_Multi_","_Jet_Pt_","_Jet_Eta_","_Elec_Pt_","_Elec_Eta_","_Muon_Pt_","_Muon_Eta_" ,"_tau_Pt_","_tau_Eta_"      };
-  Int_t   bin[] = {    3000 , 3000       , 3000       ,   1000     ,      1000  ,    64        ,   20     , 3000     , 1000   , 3000     , 1000   , 3000     , 1000   , 3000     , 1000            }; 
-  Double_t min[] = {    0.0 ,   0.0      ,   0.0      ,  -5.0      ,      -5.0  ,     0.       ,    0     ,   0.0    , -5.0   ,   0.0    , -5.0   ,   0.0    , -5.0   ,   0.0    , -5.0             }; 
-  Double_t max[] = { 30000.0, 30000.0    , 30000.0    ,   5.0      ,       5.0  ,   6.4        ,   20     , 30000.0  ,  5.0   , 30000.0  ,  5.0   , 30000.0  ,  5.0   , 30000.0  ,  5.0             }; 
+  Int_t   bin[] = {    3000 , 3000       , 3000       ,   1400     ,      1400  ,    64        ,   20     , 3000     , 1400   , 3000     , 1400   , 3000     , 1400   , 3000     , 1400            }; 
+  Double_t min[] = {    0.0 ,   0.0      ,   0.0      ,  -7.0      ,      -7.0  ,     0.       ,    0     ,   0.0    , -7.0   ,   0.0    , -7.0   ,   0.0    , -7.0   ,   0.0    , -7.0             }; 
+  Double_t max[] = { 30000.0, 30000.0    , 30000.0    ,   7.0      ,       7.0  ,   6.4        ,   20     , 30000.0  ,  7.0   , 30000.0  ,  7.0   , 30000.0  ,  7.0   , 30000.0  ,  7.0             }; 
 
 
 
