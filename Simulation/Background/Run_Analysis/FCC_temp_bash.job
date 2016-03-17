@@ -34,7 +34,7 @@ WORKDIR=${WORKDIRME}
 # Set Software
 . /afs/cern.ch/sw/lcg/external/gcc/4.8/x86_64-slc6/setup.sh
 . /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.32/x86_64-slc6-gcc48-opt/root/bin/thisroot.sh
-SCRAM_ARCH=slc6_amd64_gcc481
+#SCRAM_ARCH=slc6_amd64_gcc481
 
 
 # PATH Setting print
@@ -94,9 +94,9 @@ for loadfile in ${LINKLOAD[@]} ; do # Loop files
     ## Step-3: Running Analysis                                                                #
     ###########################################################################################
 
+    mv ${ROOTNAME} FileLoad.root  
     for plotN in `seq 0 1` ; do 
         
-        mv ${ROOTNAME} FileLoad.root  
         if [ "INPUT1" == "wzjet" ]; then 
             root -l <<EOF
                 .L Analysis_Code.C
@@ -123,7 +123,8 @@ EOF
     done
     mv FileLoad.root ${ROOTNAME}  
     mv ${ROOTNAME} Data/
-    mv Analysis_* Analysis/
+    mv Analysis_*root Analysis/
+    mv Analysis_*txt Analysis/
 done
 
 
@@ -133,7 +134,8 @@ mv Data/* ${DATADIR}/Data_FAST/INPUT1
 mv Analysis/* ${DATADIR}/Analysis_BG/INPUT1
 rm -f Analysis_Code.C
 rm -f libDelphes.so 
-
+cd ../
+mv ${WORKDIR}/INPUT1_INPUT2 ${WORKDIRME}/
 
 #
 #
