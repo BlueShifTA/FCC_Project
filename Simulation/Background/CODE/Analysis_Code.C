@@ -69,7 +69,6 @@ void Analysis_Code(const char *inputFile, Int_t plot_num, Int_t proc ) {
     TFile *f            = new TFile("Monojet.root","recreate");
     fstream myfile;
     myfile.open("Monojet.txt", std::fstream::in | std::fstream::out | std::fstream::app);
-
   }
 
   TTree *SelectionCut = new TTree("SelectionCut","Tree for collect data"); 

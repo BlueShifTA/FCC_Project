@@ -1,109 +1,136 @@
 #!/bin/bash
-
-#
 # ---------------------------------------------------------
 # Comments & optional setting
 # ---------------------------------------------------------
 # INPUT1 = Process  eg. Bj tt tj wzjet
-# INPUT2 = Initial Index
-# INPUT3 = Final Index
-# INPUT4 = Run from initial index
-# INPUT5 = final index
+# INPUT2 = Index
 # PlotN  = Plot k-N
 
-#
 # ---------------------------------------------------------
 # LSF parameters
 # ---------------------------------------------------------
-#
+
 echo ""
 echo "Job is running on `uname -a`"
 echo "Job started on `date`"
 echo ""
 ##echo "Job has been submitted from : " $LS_SUBCWD
-#
-#. /afs/cern.ch/sw/lcg/external/gcc/4.8/x86_64-slc6/setup.sh
-#. /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.32/x86_64-slc6-gcc48-opt/root/bin/thisroot.sh
 
-#
+
 #----------------------------------------------------------
 # S e t   t h e   r u n t i m e   e n v i r o n m e n t
 #----------------------------------------------------------
-#
-echo "Step 1 : Setting the environment"
-SCRATCH_SRC="/home/orion/Project/ParticlePhysics/FCC/Simulation/Background"
-CODE_SRC=${SCRATCH_SRC}/CODE
-WORKDIR=${SCRATCH_SRC}/Processes
-DATADIR="/home/orion/Project/ParticlePhysics/FCC/Simulation/Data/FCC_Project/Background"
-#DELPHESDIR=/afs/cern.ch/user/s/sekin/Software/Delphes-3.2.0
 
-#
+echo "Step 1 : Setting the environment"
+
+# Set Path
+SCRATCH_SRC="/afs/cern.ch/work/s/sekin/private/Project/FCC_hh_100TeV/FCC_Project/Simulation/Background"
+CODE_SRC=${SCRATCH_SRC}/CODE
+WORKDIRME=${SCRATCH_SRC}/Processes
+DATADIR="/afs/cern.ch/work/s/sekin/private/Project/FCC_hh_100TeV"
+DELPHESDIR="/afs/cern.ch/work/s/sekin/private/Software/Delphes-3.3.2"
+WORKDIR=${WORKDIRME}
+
+# Set Software
+. /afs/cern.ch/sw/lcg/external/gcc/4.8/x86_64-slc6/setup.sh
+. /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.32/x86_64-slc6-gcc48-opt/root/bin/thisroot.sh
+SCRAM_ARCH=slc6_amd64_gcc481
+
+
+# PATH Setting print
 echo "- - - - - PATH SETTING- - - - -"
 echo "SCRAM_ARCH is : " ${SCRAM_ARCH}
 echo "CODE_SRC is : " ${CODE_SRC}
 echo "WorkDir    is : " ${WORKDIR}
 echo "Disk space on this batch machine:"
 df -h
-#
-#
-##
-##----------------------------------------------------------
-## Run INPUT
-##----------------------------------------------------------
-##
-#echo "Step 2 : Run"
+
+echo "Step 2 : Run"
 ##########################################################################################
 # Step-1: Load and Make File lists                                                       #
 ##########################################################################################
 
 echo "Start Step-1: "
 
-cd ${WORKDIR}/INPUT1/INPUT2_INPUT3
-#SCRAM_ARCH=slc6_amd64_gcc481
-#
+#-------------- Set workspace -------------------
+
+cd ${WORKDIR}
+
+mkdir INPUT1_INPUT2
+cd INPUT1_INPUT2
+mkdir Data
+mkdir Analysis
 cp -a ${CODE_SRC}/Analysis_Code.C .
-cp -a ${CODE_SRC}/libDelphes.so .
+cp -a ${DELPHESDIR}/libDelphes.so .
+cp -a ${DELPHESDIR}/DelphesProMC .
+cp -a ${DELPHESDIR}/cards/delphes_card_FCC_hh_rfast002.tcl .
+
+# ----------------- Set Files list for loading -------------------
+declare -A process
+process=([qcd]=87 [ttbar]=89 [wzjet]=90 [higgs]=91)
+echo ${process['INPUT1']}
+
+
+HREF=http://atlaswww.hep.anl.gov/hepsim/show.php?item=${process['INPUT1']}
+wget --output-document=Source.txt ${HREF}
+LINKLOAD=$(more Source.txt | grep _INPUT2.promc | sed s/\"/" "/g | awk '{print $3}')
+
 #-----------------Begin Process Loop---------------
 
-for ind in `seq INPUT4 INPUT5` ; do
-    for plotN in `seq 4 4` ; do 
-        echo "tev100_pythia8_INPUT1_ptINPUT2_INPUT3_${ind}.root ${plotN}"
-        while  ( [ ! -f FileLoad.root ] ); do  
-            if [ ${count} == 5 ]; then 
-                break
-            fi  
-            cp -a ${DATADIR}/INPUT1/tev100_pythia8_INPUT1_ptINPUT2_INPUT3_${ind}.root FileLoad.root
-            count=${count}+1
-            sleep 5
-        done
-#        if [ "INPUT1" == "wzjet" ]; then 
-#        root -l <<EOF
-#            .L Analysis_Code.C
-#            Analysis_Code("FileLoad.root",${plotN},1)
-#            Analysis_Code("FileLoad.root",${plotN},2)
-#            Analysis_Code("FileLoad.root",${plotN},3)
-#            .q
-#EOF
-#        mv Monojet_wzjet_1.root Analysis_INPUT1_INPUT2_INPUT3_${ind}_${plotN}_1.root
-#        mv Monojet_wzjet_2.root Analysis_INPUT1_INPUT2_INPUT3_${ind}_${plotN}_2.root
-#        mv Monojet_wzjet_3.root Analysis_INPUT1_INPUT2_INPUT3_${ind}_${plotN}_3.root
-#        mv Monojet_wzjet_1.txt  Analysis_INPUT1_INPUT2_INPUT3_${ind}_${plotN}_1.txt
-#        mv Monojet_wzjet_2.txt  Analysis_INPUT1_INPUT2_INPUT3_${ind}_${plotN}_2.txt
-#        mv Monojet_wzjet_3.txt  Analysis_INPUT1_INPUT2_INPUT3_${ind}_${plotN}_3.txt
-#        else 
-        root -l <<EOF
-            .L Analysis_Code.C
-            Analysis_Code("FileLoad.root",${plotN},0)
-            .q
+###########################################################################################
+## Step-2: Running Fast Sim                                                               #
+###########################################################################################
+
+for loadfile in ${LINKLOAD[@]} ; do # Loop files
+    wget ${loadfile}  
+    FILENAME=$(echo ${loadfile} | sed 's/\// /g' | awk '{print $9}' )
+    ROOTNAME=$(echo ${loadfile} | sed 's/\// /g' | awk '{print $9}' | sed 's/\.promc/\.root/') 
+    WOTYNAME=$(echo ${loadfile} | sed 's/\// /g' | awk '{print $9}' | sed 's/\.promc/" "/') 
+
+    ./DelphesProMC delphes_card_FCC_hh_rfast002.tcl ${ROOTNAME} ${FILENAME}
+    mv ${FILENAME} ${DATADIR}/Data_ProMC/INPUT1
+
+    ###########################################################################################
+    ## Step-3: Running Analysis                                                                #
+    ###########################################################################################
+
+    for plotN in `seq 0 1` ; do 
+        
+        mv ${ROOTNAME} FileLoad.root  
+        if [ "INPUT1" == "wzjet" ]; then 
+            root -l <<EOF
+                .L Analysis_Code.C
+                Analysis_Code("FileLoad.root",${plotN},1)
+                Analysis_Code("FileLoad.root",${plotN},2)
+                Analysis_Code("FileLoad.root",${plotN},3)
+                .q
 EOF
-        mv Monojet.root Analysis_INPUT1_INPUT2_INPUT3_${ind}_${plotN}.root
-        mv Monojet.txt  Analysis_INPUT1_INPUT2_INPUT3_${ind}_${plotN}.txt
-#        fi 
-        rm -f FileLoad.root
+            mv Monojet_wzjet_1.root Analysis_${WOTYNAME}_${plotN}_1.root
+            mv Monojet_wzjet_2.root Analysis_${WOTYNAME}_${plotN}_2.root
+            mv Monojet_wzjet_3.root Analysis_${WOTYNAME}_${plotN}_3.root
+            mv Monojet_wzjet_1.txt  Analysis_${WOTYNAME}_${plotN}_1.txt
+            mv Monojet_wzjet_2.txt  Analysis_${WOTYNAME}_${plotN}_2.txt
+            mv Monojet_wzjet_3.txt  Analysis_${WOTYNAME}_${plotN}_3.txt
+        else 
+            root -l <<EOF
+                .L Analysis_Code.C
+                Analysis_Code("FileLoad.root",${plotN},0)
+                .q
+EOF
+            mv Monojet.root Analysis_${WOTYNAME}_${ind}_${plotN}.root
+            mv Monojet.txt  Analysis_${WOTYNAME}_${ind}_${plotN}.txt
+            fi 
     done
+    mv FileLoad.root ${ROOTNAME}  
+    mv ${ROOTNAME} Data/
+    mv Analysis_* Analysis/
 done
-#
+
+
 ##----------------------------Move to Directory and clear-----------------
+
+mv Data/* ${DATADIR}/Data_FAST/INPUT1
+mv Analysis/* ${DATADIR}/Analysis_BG/INPUT1
 rm -f Analysis_Code.C
 rm -f libDelphes.so 
 
@@ -113,8 +140,6 @@ rm -f libDelphes.so
 #
 ################################################################################################################
 #
-###########################################################################################
-## Step-2: Running Process                                                                #
 ###########################################################################################
 #
 #echo "Start Step-2: "
@@ -156,6 +181,14 @@ rm -f libDelphes.so
 
 ##-----------------------------End HTbin---------------------------------
 #
+        #while  ( [ ! -f FileLoad.root ] ); do  
+        #    if [ ${count} == 5 ]; then 
+        #        break
+        #    fi  
+        #    cp -a ${DATADIR}/INPUT1/tev100_pythia8_INPUT1_ptINPUT2_INPUT3_${ind}.root FileLoad.root
+        #    count=${count}+1
+        #    sleep 5
+        #done
 #
 #
 #
