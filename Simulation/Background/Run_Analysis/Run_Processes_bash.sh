@@ -9,6 +9,6 @@ mv temp FCC_${1}_${2}_bash.job
 chmod a+x FCC_${1}_${2}_bash.job
 
 ## Send job
-./FCC_${1}_${2}_bash.job > Log_FCC_${1}_${2}_bash.log
+#./FCC_${1}_${2}_bash.job > Log_FCC_${1}_${2}_bash.log
 
-#bsub  -q 1nd -o Log_${1}_${2}.log FCC_${1}_${2}_bash.job
+#qsub  -o /mypath/output.txt -e /mypath/error.txt FCC_${1}_${2}_bash.job
