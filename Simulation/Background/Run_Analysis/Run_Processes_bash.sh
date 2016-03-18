@@ -11,4 +11,4 @@ chmod a+x FCC_${1}_${2}_bash.job
 ## Send job
 #./FCC_${1}_${2}_bash.job > Log_FCC_${1}_${2}_bash.log
 
-#qsub  -o /mypath/output.txt -e /mypath/error.txt FCC_${1}_${2}_bash.job
+qsub -o /mypath/output.txt -e /mypath/error.txt FCC_${1}_${2}_bash.job
