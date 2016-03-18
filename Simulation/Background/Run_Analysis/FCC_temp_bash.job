@@ -1,4 +1,10 @@
-#!/bin/bash
+#### PBS Part ####
+#PBS -N INPUT1_INPUT2
+#PBS -S /bin/bash 
+#PBS -l nodes=1:ppn=1
+#PBS -q short 
+#### End Part ####
+
 # ---------------------------------------------------------
 # Comments & optional setting
 # ---------------------------------------------------------
@@ -7,7 +13,7 @@
 # PlotN  = Plot k-N
 
 # ---------------------------------------------------------
-# LSF parameters
+# parameters
 # ---------------------------------------------------------
 
 echo ""
@@ -24,16 +30,19 @@ echo ""
 echo "Step 1 : Setting the environment"
 
 # Set Path
-SCRATCH_SRC="/afs/cern.ch/work/s/sekin/private/Project/FCC_hh_100TeV/FCC_Project/Simulation/Background"
+SCRATCH_SRC="/accounts/c1260h7/FCC_Project/Simulation/Background"
 CODE_SRC=${SCRATCH_SRC}/CODE
 WORKDIRME=${SCRATCH_SRC}/Processes
-DATADIR="/afs/cern.ch/work/s/sekin/private/Project/FCC_hh_100TeV"
-DELPHESDIR="/afs/cern.ch/work/s/sekin/private/Software/Delphes-3.3.2"
+DATADIR="/accounts/c1260h7/Storage/Background"
+DELPHESDIR="/accounts/c1260h7/Software/Delphes/Delphes-3.3.2"
 WORKDIR=${WORKDIRME}
 
 # Set Software
-. /afs/cern.ch/sw/lcg/external/gcc/4.8/x86_64-slc6/setup.sh
-. /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.32/x86_64-slc6-gcc48-opt/root/bin/thisroot.sh
+source /opt/intel/bin/compilervars.sh intel64
+source /programs/root/root-5.34.24-src/bin/thisroot.sh
+
+#. /afs/cern.ch/sw/lcg/external/gcc/4.8/x86_64-slc6/setup.sh
+#. /afs/cern.ch/sw/lcg/app/releases/ROOT/5.34.32/x86_64-slc6-gcc48-opt/root/bin/thisroot.sh
 #SCRAM_ARCH=slc6_amd64_gcc481
 
 
