@@ -50,50 +50,50 @@ df -h
 # Run INPUT
 #----------------------------------------------------------
 #
-#echo "Step 2 : Run"
-############################################################################################
-### Step-1: Setting Variables                                                              #
-############################################################################################
-#
-#echo "Start Step-1: "
-#
-#cd ${WORKDIR}
-##SCRAM_ARCH=slc6_amd64_gcc472
-#
+echo "Step 2 : Run"
+###########################################################################################
+## Step-1: Setting Variables                                                              #
+###########################################################################################
+
+echo "Start Step-1: "
+
+cd ${WORKDIR}
+#SCRAM_ARCH=slc6_amd64_gcc472
+
 cd ${PYTHIA8DIR}
+
+cp -a FCC_ADD_Template INPUT1_INPUT2_INPUT3_INPUT4
+
+cd INPUT1_INPUT2_INPUT3_INPUT4
+
+source config.sh
+
+sed s/IN1/INPUT1/g ADD_pythia.cc > temp
+mv temp ADD_pythia.cc
+
+sed s/IN2/INPUT2/g ADD_pythia.cc > temp
+mv temp ADD_pythia.cc
+
+sed s/IN3/INPUT3/g ADD_pythia.cc > temp
+mv temp ADD_pythia.cc
+
+sed s/IN4/INPUT4/g ADD_pythia.cc > temp
+mv temp ADD_pythia.cc
+
+################################################################################################################
 #
-#cp -a FCC_ADD_Template INPUT1_INPUT2_INPUT3_INPUT4
 #
-#cd INPUT1_INPUT2_INPUT3_INPUT4
-#
-#source config.sh
-#
-#sed s/IN1/INPUT1/g ADD_pythia.cc > temp
-#mv temp ADD_pythia.cc
-#
-#sed s/IN2/INPUT2/g ADD_pythia.cc > temp
-#mv temp ADD_pythia.cc
-#
-#sed s/IN3/INPUT3/g ADD_pythia.cc > temp
-#mv temp ADD_pythia.cc
-#
-#sed s/IN4/INPUT4/g ADD_pythia.cc > temp
-#mv temp ADD_pythia.cc
-#
-#################################################################################################################
-##
-##
-############################################################################################
-### Step-2: Running Pythia                                                                 #
-############################################################################################
-#
-#echo "Start Step-2: "
-#
-#make ADD_pythia
-#./ADD_pythia.exe > pythia_INPUT1_INPUT2_INPUT3_INPUT4.log
-#
-#cd ../
-#
+###########################################################################################
+## Step-2: Running Pythia                                                                 #
+###########################################################################################
+
+echo "Start Step-2: "
+
+make ADD_pythia
+./ADD_pythia.exe > pythia_INPUT1_INPUT2_INPUT3_INPUT4.log
+
+cd ../
+
 mv INPUT1_INPUT2_INPUT3_INPUT4 ${WORKDIR} 
 #
 
